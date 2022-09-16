@@ -10,13 +10,18 @@ namespace ExcelDataLoader
 {
 	public partial class Form1 : Form
 	{
-		private const string CON_STRING = "Server=localhost;Database=fns";
+		private const string CON_STRING = "Server={0};uid={1};pwd={2};Database={3};";
 		private const int BATCH_SIZE = 25000;
 
 		private string _excelPath = "";
 
 		private Dictionary<string, int> _mapping = new Dictionary<string, int>() { { "id", 0 }, { "ogrn", 1 }, { "inn", 2 }, { "name", 3 } };
 		private List<ComboBox> _mappingBoxes = new List<ComboBox>();
+
+		private DataTable _cachedPreview = new DataTable();
+		int _cachedStartIndex = 0;
+		const int FORWARD_CACHE_COUNT = 50;
+		const int BACKWARD_CACHE_COUNT = 50;
 
 		public Form1()
 		{
@@ -49,24 +54,62 @@ namespace ExcelDataLoader
 					return;
 			}
 
-			excel_preview.DataSource = GetExcelPreview(_excelPath, 4, 4, (int)skip_rows_numeric.Value);
+			UpdatePreview();
 		}
-
 		private void upload_button_Click(object sender, EventArgs e)
 		{
 			string tableName = table_combo_box.Text;
 
-			StringBuilder protocolStringBuiler = new StringBuilder("Протокол:\n");
+			if (tableName == "")
+			{
+				protocol_text.Text = "Укажите таблицу БД.";
+				return;
+			}
+			if (_excelPath == "")
+			{
+				protocol_text.Text = "Выберите файл Excel для загрузки.";
+				return;
+			}
+
+			StringBuilder protocolStringBuiler = new StringBuilder("Протокол:");
+			protocolStringBuiler.AppendLine();
 
 			protocolStringBuiler.AppendLine($"Таблица-преемник: {tableName}");
-			
-			using (var con = new MySqlConnection(CON_STRING))
+
+			string server = server_textBox.Text;
+			if (server == "")
 			{
-				protocolStringBuiler.AppendLine($"Количество записей до очистки: {GetRowCount(tableName, con)}");
-				protocolStringBuiler.AppendLine($"Имя загружаемого файла: {Path.GetFileName(_excelPath)}");
-				DataTable dt = GetExcelData(_excelPath, (int)skip_rows_numeric.Value);
-				BulkInsert(dt, table_combo_box.Text, con, clear_table_chechBox.Checked);
-				protocolStringBuiler.AppendLine($"Количество записей после загрузки: {GetRowCount(tableName, con)}");
+				protocol_text.Text = "Введите адрес сервера БД.";
+				return;
+			}
+			string login = login_textBox.Text;
+			string password = password_textBox.Text;
+			string database = db_name_textBox.Text;
+			if (database == "")
+			{
+				protocol_text.Text = "Введите название БД.";
+				return;
+			}
+
+			string conString = string.Format(CON_STRING, server, login, password, database);
+			using (var con = new MySqlConnection(conString))
+			{
+				try
+				{
+					protocolStringBuiler.AppendLine($"Количество записей до очистки: {GetRowCount(tableName, con)}");
+					protocolStringBuiler.AppendLine($"Имя загружаемого файла: {Path.GetFileName(_excelPath)}");
+					DataTable dt;
+					dt = GetExcelData(_excelPath, (int)skip_rows_numeric.Value);
+					BulkInsert(dt, table_combo_box.Text, con, clear_table_chechBox.Checked);
+					protocolStringBuiler.AppendLine($"Количество записей после загрузки: {GetRowCount(tableName, con)}");
+				}
+				catch (Exception exc)
+				{
+					protocol_text.Text = $"Ошибка: {exc.Message}";
+					if (con.State == ConnectionState.Open)
+						con.Close();
+					return;
+				}
 			}
 
 			protocol_text.Text = protocolStringBuiler.ToString();
@@ -123,10 +166,7 @@ namespace ExcelDataLoader
 							break;
 						DataRow row = dt.NewRow();
 						for (int j = 0; j < columnCount; j++)
-						{
-							object data = reader.GetValue(j);
-							row[j] = data?.ToString();
-						}
+							row[j] = reader.GetValue(j);
 						dt.Rows.Add(row);
 					}
 				}
@@ -237,7 +277,46 @@ namespace ExcelDataLoader
 			}
 
 			if (_excelPath != "")
-				excel_preview.DataSource = GetExcelPreview(_excelPath, 4, 4, (int)skip_rows_numeric.Value);
+				UpdatePreview(false);
+		}
+		private DataTable GetPreview()
+		{
+			DataTable dt = new DataTable();
+			for (int i = 0; i < 4; i++)
+				dt.Columns.Add();
+			int skipRows = (int)skip_rows_numeric.Value;
+
+			if (_cachedStartIndex + _cachedPreview.Rows.Count - skipRows < 4 || _cachedStartIndex > skipRows)
+				LoadNewPreview();
+
+			for (int i = 0; i < 4; i++)
+			{
+				DataRow destRow = dt.NewRow();
+				DataRow sourceRow = _cachedPreview.Rows[skipRows - _cachedStartIndex + i];
+				destRow.ItemArray = (object[])sourceRow.ItemArray.Clone();
+				dt.Rows.Add(destRow);
+			}
+
+			return dt;
+		}
+		private void UpdatePreview(bool newFile = true)
+		{
+			if (newFile)
+				LoadNewPreview();
+
+			DataTable preview = GetPreview();
+			excel_preview.DataSource = preview;
+		}
+		private void LoadNewPreview()
+		{
+			int skipRows = (int)skip_rows_numeric.Value;
+
+			int start = Math.Max(0, skipRows - BACKWARD_CACHE_COUNT);
+			int length = skipRows + FORWARD_CACHE_COUNT - start;
+
+			_cachedPreview = GetExcelPreview(_excelPath, 4, length, start);
+
+			_cachedStartIndex = start;
 		}
 	}
 }

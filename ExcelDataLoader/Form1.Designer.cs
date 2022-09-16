@@ -48,8 +48,10 @@
 			this.login_textBox = new System.Windows.Forms.TextBox();
 			this.password_label = new System.Windows.Forms.Label();
 			this.password_textBox = new System.Windows.Forms.TextBox();
-			this.table_label = new System.Windows.Forms.Label();
-			this.table_name_textBox = new System.Windows.Forms.TextBox();
+			this.db_label = new System.Windows.Forms.Label();
+			this.db_name_textBox = new System.Windows.Forms.TextBox();
+			this.server_label = new System.Windows.Forms.Label();
+			this.server_textBox = new System.Windows.Forms.TextBox();
 			((System.ComponentModel.ISupportInitialize)(this.excel_preview)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.skip_rows_numeric)).BeginInit();
 			this.SuspendLayout();
@@ -78,9 +80,9 @@
 			// 
 			// upload_button
 			// 
-			this.upload_button.Location = new System.Drawing.Point(234, 311);
+			this.upload_button.Location = new System.Drawing.Point(12, 342);
 			this.upload_button.Name = "upload_button";
-			this.upload_button.Size = new System.Drawing.Size(216, 25);
+			this.upload_button.Size = new System.Drawing.Size(438, 25);
 			this.upload_button.TabIndex = 3;
 			this.upload_button.Text = "Загрузить данные";
 			this.upload_button.UseVisualStyleBackColor = true;
@@ -227,6 +229,11 @@
 			// skip_rows_numeric
 			// 
 			this.skip_rows_numeric.Location = new System.Drawing.Point(415, 41);
+			this.skip_rows_numeric.Maximum = new decimal(new int[] {
+            65000,
+            0,
+            0,
+            0});
 			this.skip_rows_numeric.Name = "skip_rows_numeric";
 			this.skip_rows_numeric.Size = new System.Drawing.Size(35, 23);
 			this.skip_rows_numeric.TabIndex = 14;
@@ -270,32 +277,52 @@
 			// 
 			this.password_textBox.Location = new System.Drawing.Point(75, 313);
 			this.password_textBox.Name = "password_textBox";
+			this.password_textBox.PasswordChar = '*';
 			this.password_textBox.Size = new System.Drawing.Size(153, 23);
 			this.password_textBox.TabIndex = 19;
 			// 
-			// table_label
+			// db_label
 			// 
-			this.table_label.AutoSize = true;
-			this.table_label.Location = new System.Drawing.Point(234, 287);
-			this.table_label.Name = "table_label";
-			this.table_label.Size = new System.Drawing.Size(57, 15);
-			this.table_label.TabIndex = 20;
-			this.table_label.Text = "Таблица:";
+			this.db_label.AutoSize = true;
+			this.db_label.Location = new System.Drawing.Point(234, 287);
+			this.db_label.Name = "db_label";
+			this.db_label.Size = new System.Drawing.Size(25, 15);
+			this.db_label.TabIndex = 20;
+			this.db_label.Text = "БД:";
 			// 
-			// table_name_textBox
+			// db_name_textBox
 			// 
-			this.table_name_textBox.Location = new System.Drawing.Point(297, 282);
-			this.table_name_textBox.Name = "table_name_textBox";
-			this.table_name_textBox.Size = new System.Drawing.Size(153, 23);
-			this.table_name_textBox.TabIndex = 21;
+			this.db_name_textBox.Location = new System.Drawing.Point(297, 282);
+			this.db_name_textBox.Name = "db_name_textBox";
+			this.db_name_textBox.Size = new System.Drawing.Size(153, 23);
+			this.db_name_textBox.TabIndex = 21;
+			// 
+			// server_label
+			// 
+			this.server_label.AutoSize = true;
+			this.server_label.Location = new System.Drawing.Point(234, 316);
+			this.server_label.Name = "server_label";
+			this.server_label.Size = new System.Drawing.Size(50, 15);
+			this.server_label.TabIndex = 22;
+			this.server_label.Text = "Сервер:";
+			// 
+			// server_textBox
+			// 
+			this.server_textBox.Location = new System.Drawing.Point(297, 311);
+			this.server_textBox.Name = "server_textBox";
+			this.server_textBox.Size = new System.Drawing.Size(153, 23);
+			this.server_textBox.TabIndex = 23;
+			this.server_textBox.Text = "localhost";
 			// 
 			// Form1
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(462, 385);
-			this.Controls.Add(this.table_name_textBox);
-			this.Controls.Add(this.table_label);
+			this.Controls.Add(this.server_textBox);
+			this.Controls.Add(this.server_label);
+			this.Controls.Add(this.db_name_textBox);
+			this.Controls.Add(this.db_label);
 			this.Controls.Add(this.password_textBox);
 			this.Controls.Add(this.password_label);
 			this.Controls.Add(this.login_textBox);
@@ -343,7 +370,9 @@
 		private TextBox login_textBox;
 		private Label password_label;
 		private TextBox password_textBox;
-		private Label table_label;
-		private TextBox table_name_textBox;
+		private Label db_label;
+		private TextBox db_name_textBox;
+		private Label server_label;
+		private TextBox server_textBox;
 	}
 }
