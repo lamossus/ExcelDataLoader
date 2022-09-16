@@ -80,7 +80,7 @@
 			// 
 			// upload_button
 			// 
-			this.upload_button.Location = new System.Drawing.Point(12, 342);
+			this.upload_button.Location = new System.Drawing.Point(12, 357);
 			this.upload_button.Name = "upload_button";
 			this.upload_button.Size = new System.Drawing.Size(438, 25);
 			this.upload_button.TabIndex = 3;
@@ -202,7 +202,7 @@
 			this.protocol_text.Multiline = true;
 			this.protocol_text.Name = "protocol_text";
 			this.protocol_text.ReadOnly = true;
-			this.protocol_text.Size = new System.Drawing.Size(438, 70);
+			this.protocol_text.Size = new System.Drawing.Size(438, 87);
 			this.protocol_text.TabIndex = 11;
 			// 
 			// db_table_label
@@ -251,7 +251,7 @@
 			// login_label
 			// 
 			this.login_label.AutoSize = true;
-			this.login_label.Location = new System.Drawing.Point(12, 287);
+			this.login_label.Location = new System.Drawing.Point(12, 302);
 			this.login_label.Name = "login_label";
 			this.login_label.Size = new System.Drawing.Size(44, 15);
 			this.login_label.TabIndex = 16;
@@ -259,7 +259,7 @@
 			// 
 			// login_textBox
 			// 
-			this.login_textBox.Location = new System.Drawing.Point(75, 284);
+			this.login_textBox.Location = new System.Drawing.Point(75, 299);
 			this.login_textBox.Name = "login_textBox";
 			this.login_textBox.Size = new System.Drawing.Size(153, 23);
 			this.login_textBox.TabIndex = 17;
@@ -267,7 +267,7 @@
 			// password_label
 			// 
 			this.password_label.AutoSize = true;
-			this.password_label.Location = new System.Drawing.Point(12, 316);
+			this.password_label.Location = new System.Drawing.Point(12, 331);
 			this.password_label.Name = "password_label";
 			this.password_label.Size = new System.Drawing.Size(52, 15);
 			this.password_label.TabIndex = 18;
@@ -275,7 +275,7 @@
 			// 
 			// password_textBox
 			// 
-			this.password_textBox.Location = new System.Drawing.Point(75, 313);
+			this.password_textBox.Location = new System.Drawing.Point(75, 328);
 			this.password_textBox.Name = "password_textBox";
 			this.password_textBox.PasswordChar = '*';
 			this.password_textBox.Size = new System.Drawing.Size(153, 23);
@@ -284,7 +284,7 @@
 			// db_label
 			// 
 			this.db_label.AutoSize = true;
-			this.db_label.Location = new System.Drawing.Point(234, 287);
+			this.db_label.Location = new System.Drawing.Point(234, 302);
 			this.db_label.Name = "db_label";
 			this.db_label.Size = new System.Drawing.Size(25, 15);
 			this.db_label.TabIndex = 20;
@@ -292,7 +292,7 @@
 			// 
 			// db_name_textBox
 			// 
-			this.db_name_textBox.Location = new System.Drawing.Point(297, 282);
+			this.db_name_textBox.Location = new System.Drawing.Point(297, 297);
 			this.db_name_textBox.Name = "db_name_textBox";
 			this.db_name_textBox.Size = new System.Drawing.Size(153, 23);
 			this.db_name_textBox.TabIndex = 21;
@@ -300,7 +300,7 @@
 			// server_label
 			// 
 			this.server_label.AutoSize = true;
-			this.server_label.Location = new System.Drawing.Point(234, 316);
+			this.server_label.Location = new System.Drawing.Point(234, 331);
 			this.server_label.Name = "server_label";
 			this.server_label.Size = new System.Drawing.Size(50, 15);
 			this.server_label.TabIndex = 22;
@@ -308,7 +308,7 @@
 			// 
 			// server_textBox
 			// 
-			this.server_textBox.Location = new System.Drawing.Point(297, 311);
+			this.server_textBox.Location = new System.Drawing.Point(297, 326);
 			this.server_textBox.Name = "server_textBox";
 			this.server_textBox.Size = new System.Drawing.Size(153, 23);
 			this.server_textBox.TabIndex = 23;
@@ -318,7 +318,7 @@
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(462, 385);
+			this.ClientSize = new System.Drawing.Size(462, 394);
 			this.Controls.Add(this.server_textBox);
 			this.Controls.Add(this.server_label);
 			this.Controls.Add(this.db_name_textBox);
@@ -341,8 +341,10 @@
 			this.Controls.Add(this.upload_button);
 			this.Controls.Add(this.table_combo_box);
 			this.Controls.Add(this.load_excel_button);
+			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+			this.MaximizeBox = false;
 			this.Name = "Form1";
-			this.Text = "Form1";
+			this.Text = "Загрузчик";
 			((System.ComponentModel.ISupportInitialize)(this.excel_preview)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.skip_rows_numeric)).EndInit();
 			this.ResumeLayout(false);
