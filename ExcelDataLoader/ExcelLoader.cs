@@ -10,6 +10,8 @@ namespace ExcelDataLoader
 {
 	internal class ExcelLoader
 	{
+		public event EventHandler<double>? OnProgress;
+
 		public DataTable GetExcelData(string excelFilePath, int skipRows = 0)
 		{
 			DataSet ds = new DataSet();
@@ -18,12 +20,32 @@ namespace ExcelDataLoader
 			{
 				using (var reader = ExcelReaderFactory.CreateReader(stream))
 				{
+					int readRows = 0;
+					int rowCount = 0;
+
+					do
+					{
+						rowCount += reader.RowCount - skipRows;
+					} while (reader.NextResult());
+
 					ds = reader.AsDataSet(new ExcelDataSetConfiguration()
 					{
 						ConfigureDataTable = _ => new ExcelDataTableConfiguration()
 						{
 							UseHeaderRow = false,
-							FilterRow = rowReader => rowReader.Depth >= skipRows
+							FilterRow = rowReader =>
+							{
+								if (rowReader.Depth >= skipRows)
+								{
+									readRows++;
+									double progress = (double)readRows / rowCount;
+
+									OnProgress?.Invoke(this, progress);
+									return true;
+								}
+
+								return false;
+							}
 						}
 					});
 				}

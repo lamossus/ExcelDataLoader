@@ -52,6 +52,7 @@
 			this.db_name_textBox = new System.Windows.Forms.TextBox();
 			this.server_label = new System.Windows.Forms.Label();
 			this.server_textBox = new System.Windows.Forms.TextBox();
+			this.progressBar = new System.Windows.Forms.ProgressBar();
 			((System.ComponentModel.ISupportInitialize)(this.excel_preview)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.skip_rows_numeric)).BeginInit();
 			this.SuspendLayout();
@@ -314,11 +315,19 @@
 			this.server_textBox.TabIndex = 23;
 			this.server_textBox.Text = "localhost";
 			// 
+			// progressBar
+			// 
+			this.progressBar.Location = new System.Drawing.Point(12, 390);
+			this.progressBar.Name = "progressBar";
+			this.progressBar.Size = new System.Drawing.Size(438, 23);
+			this.progressBar.TabIndex = 24;
+			// 
 			// Form1
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(462, 394);
+			this.ClientSize = new System.Drawing.Size(462, 425);
+			this.Controls.Add(this.progressBar);
 			this.Controls.Add(this.server_textBox);
 			this.Controls.Add(this.server_label);
 			this.Controls.Add(this.db_name_textBox);
@@ -376,5 +385,6 @@
 		private TextBox db_name_textBox;
 		private Label server_label;
 		private TextBox server_textBox;
+		private ProgressBar progressBar;
 	}
 }

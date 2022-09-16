@@ -72,11 +72,6 @@ namespace ExcelDataLoader
 				return;
 			}
 
-			StringBuilder protocolStringBuiler = new StringBuilder("Протокол:");
-			protocolStringBuiler.AppendLine();
-
-			protocolStringBuiler.AppendLine($"Таблица-преемник: {tableName}");
-
 			string server = server_textBox.Text;
 			if (server == "")
 			{
@@ -92,6 +87,12 @@ namespace ExcelDataLoader
 				return;
 			}
 
+			StringBuilder protocolStringBuiler = new StringBuilder("Протокол:");
+			protocolStringBuiler.AppendLine();
+
+			protocolStringBuiler.AppendLine($"Таблица-преемник: {tableName}");
+
+
 			string conString = string.Format(CON_STRING, server, login, password, database);
 			using (var con = new MySqlConnection(conString))
 			{
@@ -100,8 +101,16 @@ namespace ExcelDataLoader
 					protocolStringBuiler.AppendLine($"Количество записей до очистки: {_sqlLoader.GetRowCount(tableName, con)}");
 					protocolStringBuiler.AppendLine($"Имя загружаемого файла: {Path.GetFileName(_excelPath)}");
 					DataTable dt;
+
+					int progressMade = 0;
+					EventHandler<double> progressBarUpdate = (s, e) => progressBar.Value = (int)(progressMade + e * 50);
+					_excelLoader.OnProgress += progressBarUpdate;
 					dt = _excelLoader.GetExcelData(_excelPath, (int)skip_rows_numeric.Value);
+					_excelLoader.OnProgress -= progressBarUpdate;
+					progressMade = 50;
+					_sqlLoader.OnProgress += progressBarUpdate;
 					_sqlLoader.BulkInsert(dt, table_combo_box.Text, con, _mapping, clear_table_chechBox.Checked);
+					_sqlLoader.OnProgress -= progressBarUpdate;
 					protocolStringBuiler.AppendLine($"Количество записей после загрузки: {_sqlLoader.GetRowCount(tableName, con)}");
 				}
 				catch (Exception exc)
