@@ -34,10 +34,6 @@
 			this.table_combo_box = new System.Windows.Forms.ComboBox();
 			this.upload_button = new System.Windows.Forms.Button();
 			this.excel_preview = new System.Windows.Forms.DataGridView();
-			this.map_column1 = new System.Windows.Forms.ComboBox();
-			this.map_column2 = new System.Windows.Forms.ComboBox();
-			this.map_column3 = new System.Windows.Forms.ComboBox();
-			this.map_column4 = new System.Windows.Forms.ComboBox();
 			this.excel_filename = new System.Windows.Forms.TextBox();
 			this.protocol_text = new System.Windows.Forms.TextBox();
 			this.db_table_label = new System.Windows.Forms.Label();
@@ -53,8 +49,10 @@
 			this.server_label = new System.Windows.Forms.Label();
 			this.server_textBox = new System.Windows.Forms.TextBox();
 			this.progressBar = new ExcelDataLoader.ColoredProgressBar();
+			this.panel1 = new System.Windows.Forms.Panel();
 			((System.ComponentModel.ISupportInitialize)(this.excel_preview)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.skip_rows_numeric)).BeginInit();
+			this.panel1.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// load_excel_button
@@ -73,15 +71,18 @@
 			this.table_combo_box.FormattingEnabled = true;
 			this.table_combo_box.Items.AddRange(new object[] {
             "fond_debts",
-            "fond_not_boo"});
+            "fond_not_boo",
+            "test1",
+            "test2"});
 			this.table_combo_box.Location = new System.Drawing.Point(115, 41);
 			this.table_combo_box.Name = "table_combo_box";
 			this.table_combo_box.Size = new System.Drawing.Size(179, 23);
 			this.table_combo_box.TabIndex = 2;
+			this.table_combo_box.SelectedIndexChanged += new System.EventHandler(this.table_combo_box_SelectedIndexChanged);
 			// 
 			// upload_button
 			// 
-			this.upload_button.Location = new System.Drawing.Point(12, 390);
+			this.upload_button.Location = new System.Drawing.Point(12, 401);
 			this.upload_button.Name = "upload_button";
 			this.upload_button.Size = new System.Drawing.Size(438, 25);
 			this.upload_button.TabIndex = 3;
@@ -114,7 +115,7 @@
 			dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.ControlText;
 			dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
 			this.excel_preview.DefaultCellStyle = dataGridViewCellStyle2;
-			this.excel_preview.Location = new System.Drawing.Point(12, 99);
+			this.excel_preview.Location = new System.Drawing.Point(0, 32);
 			this.excel_preview.MultiSelect = false;
 			this.excel_preview.Name = "excel_preview";
 			this.excel_preview.ReadOnly = true;
@@ -122,72 +123,8 @@
 			this.excel_preview.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.AutoSizeToAllHeaders;
 			this.excel_preview.RowTemplate.Height = 25;
 			this.excel_preview.ScrollBars = System.Windows.Forms.ScrollBars.None;
-			this.excel_preview.Size = new System.Drawing.Size(438, 101);
+			this.excel_preview.Size = new System.Drawing.Size(440, 101);
 			this.excel_preview.TabIndex = 5;
-			// 
-			// map_column1
-			// 
-			this.map_column1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-			this.map_column1.FormattingEnabled = true;
-			this.map_column1.Items.AddRange(new object[] {
-            "id",
-            "ogrn",
-            "inn",
-            "name"});
-			this.map_column1.Location = new System.Drawing.Point(12, 70);
-			this.map_column1.Name = "map_column1";
-			this.map_column1.Size = new System.Drawing.Size(105, 23);
-			this.map_column1.TabIndex = 6;
-			this.map_column1.Tag = "0";
-			this.map_column1.SelectedIndexChanged += new System.EventHandler(this.MappingChanged);
-			// 
-			// map_column2
-			// 
-			this.map_column2.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-			this.map_column2.FormattingEnabled = true;
-			this.map_column2.Items.AddRange(new object[] {
-            "id",
-            "ogrn",
-            "inn",
-            "name"});
-			this.map_column2.Location = new System.Drawing.Point(123, 70);
-			this.map_column2.Name = "map_column2";
-			this.map_column2.Size = new System.Drawing.Size(105, 23);
-			this.map_column2.TabIndex = 7;
-			this.map_column2.Tag = "1";
-			this.map_column2.SelectedIndexChanged += new System.EventHandler(this.MappingChanged);
-			// 
-			// map_column3
-			// 
-			this.map_column3.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-			this.map_column3.FormattingEnabled = true;
-			this.map_column3.Items.AddRange(new object[] {
-            "id",
-            "ogrn",
-            "inn",
-            "name"});
-			this.map_column3.Location = new System.Drawing.Point(234, 70);
-			this.map_column3.Name = "map_column3";
-			this.map_column3.Size = new System.Drawing.Size(105, 23);
-			this.map_column3.TabIndex = 8;
-			this.map_column3.Tag = "2";
-			this.map_column3.SelectedIndexChanged += new System.EventHandler(this.MappingChanged);
-			// 
-			// map_column4
-			// 
-			this.map_column4.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-			this.map_column4.FormattingEnabled = true;
-			this.map_column4.Items.AddRange(new object[] {
-            "id",
-            "ogrn",
-            "inn",
-            "name"});
-			this.map_column4.Location = new System.Drawing.Point(345, 70);
-			this.map_column4.Name = "map_column4";
-			this.map_column4.Size = new System.Drawing.Size(105, 23);
-			this.map_column4.TabIndex = 9;
-			this.map_column4.Tag = "3";
-			this.map_column4.SelectedIndexChanged += new System.EventHandler(this.MappingChanged);
 			// 
 			// excel_filename
 			// 
@@ -199,7 +136,7 @@
 			// 
 			// protocol_text
 			// 
-			this.protocol_text.Location = new System.Drawing.Point(12, 216);
+			this.protocol_text.Location = new System.Drawing.Point(12, 227);
 			this.protocol_text.Multiline = true;
 			this.protocol_text.Name = "protocol_text";
 			this.protocol_text.ReadOnly = true;
@@ -238,6 +175,11 @@
 			this.skip_rows_numeric.Name = "skip_rows_numeric";
 			this.skip_rows_numeric.Size = new System.Drawing.Size(35, 23);
 			this.skip_rows_numeric.TabIndex = 14;
+			this.skip_rows_numeric.Value = new decimal(new int[] {
+            3,
+            0,
+            0,
+            0});
 			this.skip_rows_numeric.ValueChanged += new System.EventHandler(this.skip_rows_numeric_ValueChanged);
 			// 
 			// skip_rows_label
@@ -252,7 +194,7 @@
 			// login_label
 			// 
 			this.login_label.AutoSize = true;
-			this.login_label.Location = new System.Drawing.Point(12, 331);
+			this.login_label.Location = new System.Drawing.Point(12, 342);
 			this.login_label.Name = "login_label";
 			this.login_label.Size = new System.Drawing.Size(44, 15);
 			this.login_label.TabIndex = 16;
@@ -260,7 +202,7 @@
 			// 
 			// login_textBox
 			// 
-			this.login_textBox.Location = new System.Drawing.Point(75, 328);
+			this.login_textBox.Location = new System.Drawing.Point(75, 339);
 			this.login_textBox.Name = "login_textBox";
 			this.login_textBox.Size = new System.Drawing.Size(153, 23);
 			this.login_textBox.TabIndex = 17;
@@ -268,7 +210,7 @@
 			// password_label
 			// 
 			this.password_label.AutoSize = true;
-			this.password_label.Location = new System.Drawing.Point(12, 360);
+			this.password_label.Location = new System.Drawing.Point(12, 371);
 			this.password_label.Name = "password_label";
 			this.password_label.Size = new System.Drawing.Size(52, 15);
 			this.password_label.TabIndex = 18;
@@ -276,7 +218,7 @@
 			// 
 			// password_textBox
 			// 
-			this.password_textBox.Location = new System.Drawing.Point(75, 357);
+			this.password_textBox.Location = new System.Drawing.Point(75, 368);
 			this.password_textBox.Name = "password_textBox";
 			this.password_textBox.PasswordChar = '*';
 			this.password_textBox.Size = new System.Drawing.Size(153, 23);
@@ -285,7 +227,7 @@
 			// db_label
 			// 
 			this.db_label.AutoSize = true;
-			this.db_label.Location = new System.Drawing.Point(234, 331);
+			this.db_label.Location = new System.Drawing.Point(234, 342);
 			this.db_label.Name = "db_label";
 			this.db_label.Size = new System.Drawing.Size(25, 15);
 			this.db_label.TabIndex = 20;
@@ -293,7 +235,7 @@
 			// 
 			// db_name_textBox
 			// 
-			this.db_name_textBox.Location = new System.Drawing.Point(297, 326);
+			this.db_name_textBox.Location = new System.Drawing.Point(297, 337);
 			this.db_name_textBox.Name = "db_name_textBox";
 			this.db_name_textBox.Size = new System.Drawing.Size(153, 23);
 			this.db_name_textBox.TabIndex = 21;
@@ -301,7 +243,7 @@
 			// server_label
 			// 
 			this.server_label.AutoSize = true;
-			this.server_label.Location = new System.Drawing.Point(234, 360);
+			this.server_label.Location = new System.Drawing.Point(234, 371);
 			this.server_label.Name = "server_label";
 			this.server_label.Size = new System.Drawing.Size(50, 15);
 			this.server_label.TabIndex = 22;
@@ -309,7 +251,7 @@
 			// 
 			// server_textBox
 			// 
-			this.server_textBox.Location = new System.Drawing.Point(297, 355);
+			this.server_textBox.Location = new System.Drawing.Point(297, 366);
 			this.server_textBox.Name = "server_textBox";
 			this.server_textBox.Size = new System.Drawing.Size(153, 23);
 			this.server_textBox.TabIndex = 23;
@@ -318,16 +260,26 @@
 			// progressBar
 			// 
 			this.progressBar.ForeColor = System.Drawing.Color.LimeGreen;
-			this.progressBar.Location = new System.Drawing.Point(12, 421);
+			this.progressBar.Location = new System.Drawing.Point(12, 432);
 			this.progressBar.Name = "progressBar";
 			this.progressBar.Size = new System.Drawing.Size(438, 23);
 			this.progressBar.TabIndex = 24;
+			// 
+			// panel1
+			// 
+			this.panel1.AutoScroll = true;
+			this.panel1.Controls.Add(this.excel_preview);
+			this.panel1.Location = new System.Drawing.Point(11, 67);
+			this.panel1.Name = "panel1";
+			this.panel1.Size = new System.Drawing.Size(440, 155);
+			this.panel1.TabIndex = 25;
 			// 
 			// Form1
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(462, 456);
+			this.ClientSize = new System.Drawing.Size(462, 462);
+			this.Controls.Add(this.panel1);
 			this.Controls.Add(this.progressBar);
 			this.Controls.Add(this.server_textBox);
 			this.Controls.Add(this.server_label);
@@ -343,11 +295,6 @@
 			this.Controls.Add(this.db_table_label);
 			this.Controls.Add(this.protocol_text);
 			this.Controls.Add(this.excel_filename);
-			this.Controls.Add(this.map_column4);
-			this.Controls.Add(this.map_column3);
-			this.Controls.Add(this.map_column2);
-			this.Controls.Add(this.map_column1);
-			this.Controls.Add(this.excel_preview);
 			this.Controls.Add(this.upload_button);
 			this.Controls.Add(this.table_combo_box);
 			this.Controls.Add(this.load_excel_button);
@@ -357,6 +304,7 @@
 			this.Text = "Загрузчик";
 			((System.ComponentModel.ISupportInitialize)(this.excel_preview)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.skip_rows_numeric)).EndInit();
+			this.panel1.ResumeLayout(false);
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -368,10 +316,6 @@
 		private ComboBox table_combo_box;
 		private Button upload_button;
 		private DataGridView excel_preview;
-		private ComboBox map_column1;
-		private ComboBox map_column2;
-		private ComboBox map_column3;
-		private ComboBox map_column4;
 		private TextBox excel_filename;
 		private TextBox protocol_text;
 		private Label db_table_label;
@@ -387,5 +331,6 @@
 		private Label server_label;
 		private TextBox server_textBox;
 		private ColoredProgressBar progressBar;
+		private Panel panel1;
 	}
 }

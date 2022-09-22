@@ -89,7 +89,13 @@ namespace ExcelDataLoader
 							break;
 						DataRow row = dt.NewRow();
 						for (int j = 0; j < columnCount; j++)
-							row[j] = reader.GetValue(j);
+						{
+							if (j < reader.FieldCount)
+								row[j] = reader.GetValue(j);
+							else
+								break;
+						}
+
 						dt.Rows.Add(row);
 					}
 				}

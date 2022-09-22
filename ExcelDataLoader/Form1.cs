@@ -6,17 +6,22 @@ namespace ExcelDataLoader
 {
 	public partial class Form1 : Form
 	{
-		private const string CON_STRING = "Server={0};uid={1};pwd={2};Database={3};";
-
 		private string _excelPath = "";
 
-		private Dictionary<string, int> _mapping = new Dictionary<string, int>() { { "id", 0 }, { "ogrn", 1 }, { "inn", 2 }, { "name", 3 } };
+		private Dictionary<int, int> _mapping = new Dictionary<int, int>();
+		private List<string> _columnNames = new List<string>();
+		private int _columnCount = 0;
+
 		private List<ComboBox> _mappingBoxes = new List<ComboBox>();
+
+		private const string CON_STRING = "Server={0};uid={1};pwd={2};Database={3};";
 
 		private DataTable _cachedPreview = new DataTable();
 		private int _cachedStartIndex = 0;
 		private const int FORWARD_CACHE_COUNT = 50;
 		private const int BACKWARD_CACHE_COUNT = 50;
+
+		private const int COLUMN_WIDTH = 110;
 
 		private SqlLoader _sqlLoader;
 		private ExcelLoader _excelLoader;
@@ -26,11 +31,6 @@ namespace ExcelDataLoader
 			InitializeComponent();
 
 			Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
-
-			_mappingBoxes.Add(map_column1);
-			_mappingBoxes.Add(map_column2);
-			_mappingBoxes.Add(map_column3);
-			_mappingBoxes.Add(map_column4);
 
 			for (int i = 0; i < _mappingBoxes.Count; i++)
 				_mappingBoxes[i].SelectedIndex = i;
@@ -57,6 +57,20 @@ namespace ExcelDataLoader
 
 			UpdatePreview();
 		}
+		private void table_combo_box_SelectedIndexChanged(object sender, EventArgs e)
+		{
+			try
+			{
+				using (var con = new MySqlConnection(GenerateConnectionString()))
+					_columnNames = _sqlLoader.GetColumnNames(table_combo_box.Text, con);
+				_columnCount = Math.Max(_columnNames.Count, _columnCount);
+				UpdatePreview(false);
+			}
+			catch (Exception exc)
+			{
+				protocol_text.Text = exc.Message;
+			}
+		}
 		private void upload_button_Click(object sender, EventArgs e)
 		{
 			progressBar.Value = 0;
@@ -76,18 +90,15 @@ namespace ExcelDataLoader
 				return;
 			}
 
-			string server = server_textBox.Text;
-			if (server == "")
+			string conString = "";
+
+			try
 			{
-				protocol_text.Text = "Введите адрес сервера БД.";
-				return;
+				conString = GenerateConnectionString();
 			}
-			string login = login_textBox.Text;
-			string password = password_textBox.Text;
-			string database = db_name_textBox.Text;
-			if (database == "")
+			catch (Exception exc)
 			{
-				protocol_text.Text = "Введите название БД.";
+				protocol_text.Text = exc.Message;
 				return;
 			}
 
@@ -98,9 +109,6 @@ namespace ExcelDataLoader
 			protocolStringBuiler.AppendLine();
 
 			protocolStringBuiler.AppendLine($"Таблица-преемник: {tableName}");
-
-
-			string conString = string.Format(CON_STRING, server, login, password, database);
 			using (var con = new MySqlConnection(conString))
 			{
 				try
@@ -152,13 +160,19 @@ namespace ExcelDataLoader
 			if (_excelPath != "")
 				UpdatePreview(false);
 		}
-		private void MappingChanged(object sender, EventArgs e)
+		private void MappingChanged(object? sender, EventArgs e)
 		{
+			if (sender == null)
+				return;
+
 			ComboBox changedBox = (ComboBox)sender;
 
-			_mapping[changedBox.Text] = Convert.ToInt32(changedBox.Tag);
+			if (changedBox.SelectedIndex == 0)
+				return;
 
-			List<int> possibleValues = Enumerable.Range(0, _mappingBoxes.Count).ToList();
+			_mapping[changedBox.SelectedIndex - 1] = Convert.ToInt32(changedBox.Tag);
+
+			List<int> possibleValues = Enumerable.Range(1, _columnNames.Count).ToList();
 			foreach (var box in _mappingBoxes)
 				possibleValues.Remove(box.SelectedIndex);
 
@@ -175,15 +189,85 @@ namespace ExcelDataLoader
 			}
 		}
 
+		private void GenerateComboBoxes()
+		{
+			_mapping.Clear();
+			foreach (ComboBox box in _mappingBoxes)
+			{
+				box.Dispose();
+				panel1.Controls.Remove(box);
+			}
+			_mappingBoxes.Clear();
+
+			for (int i = 0; i < _columnCount; i++)
+			{
+				ComboBox comboBox = new ComboBox();
+
+				comboBox.DropDownStyle = ComboBoxStyle.DropDownList;
+				comboBox.FormattingEnabled = true;
+				comboBox.Items.Add("--не загружать--");
+				comboBox.Items.AddRange(_columnNames.ToArray());
+				comboBox.Location = new Point(COLUMN_WIDTH * i, 3);
+				comboBox.Name = "map_column3";
+				comboBox.Size = new Size(COLUMN_WIDTH, 23);
+				comboBox.Tag = i;
+				comboBox.SelectedIndexChanged += new EventHandler(MappingChanged);
+
+				if (i + 1 < comboBox.Items.Count)
+					comboBox.SelectedIndex = i + 1;
+				else
+					comboBox.SelectedIndex = 0;
+
+				_mappingBoxes.Add(comboBox);
+				panel1.Controls.Add(comboBox);
+			}
+		}
+
+		private string GenerateConnectionString()
+		{
+			string server = server_textBox.Text;
+			if (server == "")
+				throw new Exception("Введите адрес сервера БД.");
+
+			string login = login_textBox.Text;
+			string password = password_textBox.Text;
+			string database = db_name_textBox.Text;
+			if (database == "")
+				throw new Exception("Введите название БД.");
+
+			return string.Format(CON_STRING, server, login, password, database);
+		}
+
+		private void UpdatePreview(bool newFile = true)
+		{
+			if (_excelPath == "")
+				return;
+
+			if (_columnCount == 0)
+			{
+				excel_preview.Rows.Clear();
+				excel_preview.Refresh();
+				return;
+			}
+
+			if (newFile || _columnNames.Count > _columnCount)
+				LoadNewPreview(_columnCount);
+
+			GenerateComboBoxes();
+
+			DataTable preview = GetPreview();
+			excel_preview.DataSource = preview;
+			excel_preview.Width = COLUMN_WIDTH * _columnCount;
+		}
 		private DataTable GetPreview()
 		{
 			DataTable dt = new DataTable();
-			for (int i = 0; i < 4; i++)
+			for (int i = 0; i < _columnCount; i++)
 				dt.Columns.Add();
 			int skipRows = (int)skip_rows_numeric.Value;
 
 			if (_cachedStartIndex + _cachedPreview.Rows.Count - skipRows < 4 || _cachedStartIndex > skipRows)
-				LoadNewPreview();
+				LoadNewPreview(_columnCount);
 
 			for (int i = 0; i < 4; i++)
 			{
@@ -195,22 +279,14 @@ namespace ExcelDataLoader
 
 			return dt;
 		}
-		private void UpdatePreview(bool newFile = true)
-		{
-			if (newFile)
-				LoadNewPreview();
-
-			DataTable preview = GetPreview();
-			excel_preview.DataSource = preview;
-		}
-		private void LoadNewPreview()
+		private void LoadNewPreview(int columns)
 		{
 			int skipRows = (int)skip_rows_numeric.Value;
 
 			int start = Math.Max(0, skipRows - BACKWARD_CACHE_COUNT);
 			int length = skipRows + FORWARD_CACHE_COUNT - start;
 
-			_cachedPreview = _excelLoader.GetExcelPreview(_excelPath, 4, length, start);
+			_cachedPreview = _excelLoader.GetExcelPreview(_excelPath, columns, length, start);
 
 			_cachedStartIndex = start;
 		}

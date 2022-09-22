@@ -24,7 +24,7 @@ namespace ExcelDataLoader
 
 		public EventHandler<double>? OnProgress;
 
-		public void BulkInsert(DataTable dataTable, string tableName, MySqlConnection con, Dictionary<string, int> mapping, bool clearTable = true)
+		public void BulkInsert(DataTable dataTable, string tableName, MySqlConnection con, Dictionary<int, int> mapping, bool clearTable = true)
 		{
 			StringBuilder comString = new StringBuilder($"INSERT INTO {tableName} VALUES ");
 
@@ -51,12 +51,24 @@ namespace ExcelDataLoader
 
 						currentBatchSize++;
 
-						int id = Convert.ToInt32(row[mapping["id"]]);
-						string ogrn = row[mapping["ogrn"]].ToString();
-						string inn = row[mapping["inn"]].ToString();
-						string name = MySqlHelper.EscapeString(row[mapping["name"]].ToString());
+						comString.Append('(');
+						
+						for (int j = 0; j < mapping.Count; j++)
+						{
+							object value = $"'{MySqlHelper.EscapeString(row[mapping[j]].ToString())}'";
+							comString.Append(value);
+							if (j != mapping.Count - 1)
+								comString.Append(',');
+						}
 
-						comString.Append($"({id},'{ogrn}','{inn}','{name}')");
+						comString.Append(')');
+
+						//int id = Convert.ToInt32(row[mapping["id"]]);
+						//string ogrn = row[mapping["ogrn"]].ToString();
+						//string inn = row[mapping["inn"]].ToString();
+						//string name = MySqlHelper.EscapeString(row[mapping["name"]].ToString());
+
+						//comString.Append($"({id},'{ogrn}','{inn}','{name}')");
 
 						if (currentBatchSize == _batchSize || i == dataTable.Rows.Count - 1)
 						{
@@ -100,6 +112,22 @@ namespace ExcelDataLoader
 			}
 			con.Close();
 			return rows;
+		}
+		public List<string> GetColumnNames (string tableName, MySqlConnection con)
+		{
+			List<string> columnNames = new List<string>();
+			con.Open();
+			using (MySqlCommand com = new MySqlCommand($"SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = '{tableName}';", con))
+			{
+				com.CommandType = CommandType.Text;
+				using (var dr = com.ExecuteReader())
+				{
+					while (dr.Read())
+						columnNames.Add(dr.GetString(0));
+				}				
+			}
+			con.Close();
+			return columnNames;
 		}
 	}
 }
