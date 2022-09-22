@@ -59,6 +59,10 @@ namespace ExcelDataLoader
 		}
 		private void upload_button_Click(object sender, EventArgs e)
 		{
+			progressBar.Value = 0;
+			progressBar.ForeColor = Color.Green;
+			progressBar.Refresh();
+
 			string tableName = table_combo_box.Text;
 
 			if (tableName == "")
@@ -87,6 +91,9 @@ namespace ExcelDataLoader
 				return;
 			}
 
+			protocol_text.Text = "Загрузка...";
+			protocol_text.Refresh();
+
 			StringBuilder protocolStringBuiler = new StringBuilder("Протокол:");
 			protocolStringBuiler.AppendLine();
 
@@ -112,12 +119,14 @@ namespace ExcelDataLoader
 					_sqlLoader.BulkInsert(dt, table_combo_box.Text, con, _mapping, clear_table_chechBox.Checked);
 					_sqlLoader.OnProgress -= progressBarUpdate;
 					protocolStringBuiler.AppendLine($"Количество записей после загрузки: {_sqlLoader.GetRowCount(tableName, con)}");
+					protocolStringBuiler.AppendLine($"Количество загруженных листов: {_excelLoader.LastReadSheetCount}");
 				}
 				catch (Exception exc)
 				{
 					protocol_text.Text = $"Ошибка: {exc.Message}";
 					if (con.State == ConnectionState.Open)
 						con.Close();
+					progressBar.ForeColor = Color.Red; 
 					return;
 				}
 			}

@@ -12,6 +12,8 @@ namespace ExcelDataLoader
 	{
 		public event EventHandler<double>? OnProgress;
 
+		public int LastReadSheetCount { get; private set; }
+
 		public DataTable GetExcelData(string excelFilePath, int skipRows = 0)
 		{
 			DataSet ds = new DataSet();
@@ -23,8 +25,11 @@ namespace ExcelDataLoader
 					int readRows = 0;
 					int rowCount = 0;
 
+					LastReadSheetCount = 0;
+
 					do
 					{
+						LastReadSheetCount++;
 						rowCount += reader.RowCount - skipRows;
 					} while (reader.NextResult());
 

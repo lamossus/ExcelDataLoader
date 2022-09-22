@@ -52,7 +52,7 @@
 			this.db_name_textBox = new System.Windows.Forms.TextBox();
 			this.server_label = new System.Windows.Forms.Label();
 			this.server_textBox = new System.Windows.Forms.TextBox();
-			this.progressBar = new System.Windows.Forms.ProgressBar();
+			this.progressBar = new ExcelDataLoader.ColoredProgressBar();
 			((System.ComponentModel.ISupportInitialize)(this.excel_preview)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.skip_rows_numeric)).BeginInit();
 			this.SuspendLayout();
@@ -81,7 +81,7 @@
 			// 
 			// upload_button
 			// 
-			this.upload_button.Location = new System.Drawing.Point(12, 357);
+			this.upload_button.Location = new System.Drawing.Point(12, 390);
 			this.upload_button.Name = "upload_button";
 			this.upload_button.Size = new System.Drawing.Size(438, 25);
 			this.upload_button.TabIndex = 3;
@@ -199,11 +199,11 @@
 			// 
 			// protocol_text
 			// 
-			this.protocol_text.Location = new System.Drawing.Point(12, 206);
+			this.protocol_text.Location = new System.Drawing.Point(12, 216);
 			this.protocol_text.Multiline = true;
 			this.protocol_text.Name = "protocol_text";
 			this.protocol_text.ReadOnly = true;
-			this.protocol_text.Size = new System.Drawing.Size(438, 87);
+			this.protocol_text.Size = new System.Drawing.Size(438, 106);
 			this.protocol_text.TabIndex = 11;
 			// 
 			// db_table_label
@@ -252,7 +252,7 @@
 			// login_label
 			// 
 			this.login_label.AutoSize = true;
-			this.login_label.Location = new System.Drawing.Point(12, 302);
+			this.login_label.Location = new System.Drawing.Point(12, 331);
 			this.login_label.Name = "login_label";
 			this.login_label.Size = new System.Drawing.Size(44, 15);
 			this.login_label.TabIndex = 16;
@@ -260,7 +260,7 @@
 			// 
 			// login_textBox
 			// 
-			this.login_textBox.Location = new System.Drawing.Point(75, 299);
+			this.login_textBox.Location = new System.Drawing.Point(75, 328);
 			this.login_textBox.Name = "login_textBox";
 			this.login_textBox.Size = new System.Drawing.Size(153, 23);
 			this.login_textBox.TabIndex = 17;
@@ -268,7 +268,7 @@
 			// password_label
 			// 
 			this.password_label.AutoSize = true;
-			this.password_label.Location = new System.Drawing.Point(12, 331);
+			this.password_label.Location = new System.Drawing.Point(12, 360);
 			this.password_label.Name = "password_label";
 			this.password_label.Size = new System.Drawing.Size(52, 15);
 			this.password_label.TabIndex = 18;
@@ -276,7 +276,7 @@
 			// 
 			// password_textBox
 			// 
-			this.password_textBox.Location = new System.Drawing.Point(75, 328);
+			this.password_textBox.Location = new System.Drawing.Point(75, 357);
 			this.password_textBox.Name = "password_textBox";
 			this.password_textBox.PasswordChar = '*';
 			this.password_textBox.Size = new System.Drawing.Size(153, 23);
@@ -285,7 +285,7 @@
 			// db_label
 			// 
 			this.db_label.AutoSize = true;
-			this.db_label.Location = new System.Drawing.Point(234, 302);
+			this.db_label.Location = new System.Drawing.Point(234, 331);
 			this.db_label.Name = "db_label";
 			this.db_label.Size = new System.Drawing.Size(25, 15);
 			this.db_label.TabIndex = 20;
@@ -293,7 +293,7 @@
 			// 
 			// db_name_textBox
 			// 
-			this.db_name_textBox.Location = new System.Drawing.Point(297, 297);
+			this.db_name_textBox.Location = new System.Drawing.Point(297, 326);
 			this.db_name_textBox.Name = "db_name_textBox";
 			this.db_name_textBox.Size = new System.Drawing.Size(153, 23);
 			this.db_name_textBox.TabIndex = 21;
@@ -301,7 +301,7 @@
 			// server_label
 			// 
 			this.server_label.AutoSize = true;
-			this.server_label.Location = new System.Drawing.Point(234, 331);
+			this.server_label.Location = new System.Drawing.Point(234, 360);
 			this.server_label.Name = "server_label";
 			this.server_label.Size = new System.Drawing.Size(50, 15);
 			this.server_label.TabIndex = 22;
@@ -309,7 +309,7 @@
 			// 
 			// server_textBox
 			// 
-			this.server_textBox.Location = new System.Drawing.Point(297, 326);
+			this.server_textBox.Location = new System.Drawing.Point(297, 355);
 			this.server_textBox.Name = "server_textBox";
 			this.server_textBox.Size = new System.Drawing.Size(153, 23);
 			this.server_textBox.TabIndex = 23;
@@ -317,7 +317,8 @@
 			// 
 			// progressBar
 			// 
-			this.progressBar.Location = new System.Drawing.Point(12, 390);
+			this.progressBar.ForeColor = System.Drawing.Color.LimeGreen;
+			this.progressBar.Location = new System.Drawing.Point(12, 421);
 			this.progressBar.Name = "progressBar";
 			this.progressBar.Size = new System.Drawing.Size(438, 23);
 			this.progressBar.TabIndex = 24;
@@ -326,7 +327,7 @@
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(462, 425);
+			this.ClientSize = new System.Drawing.Size(462, 456);
 			this.Controls.Add(this.progressBar);
 			this.Controls.Add(this.server_textBox);
 			this.Controls.Add(this.server_label);
@@ -385,6 +386,6 @@
 		private TextBox db_name_textBox;
 		private Label server_label;
 		private TextBox server_textBox;
-		private ProgressBar progressBar;
+		private ColoredProgressBar progressBar;
 	}
 }
