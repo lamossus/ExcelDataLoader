@@ -65,17 +65,17 @@ namespace ExcelDataLoader
 
 			return ds.Tables[0];
 		}
-		public DataTable GetExcelPreview(string excelFilePath, int columnCount, int rowCount, int skipRows = 0)
+		public DataTable GetExcelPreview(string excelFilePath, int rowCount, int skipRows = 0)
 		{
 			DataTable dt = new DataTable();
-
-			for (int i = 0; i < columnCount; i++)
-				dt.Columns.Add();
 
 			using (var stream = File.Open(excelFilePath, FileMode.Open, FileAccess.Read))
 			{
 				using (var reader = ExcelReaderFactory.CreateReader(stream))
 				{
+					for (int i = 0; i < reader.FieldCount; i++)
+						dt.Columns.Add();
+
 					while (skipRows > 0)
 					{
 						reader.Read();
@@ -88,7 +88,7 @@ namespace ExcelDataLoader
 						if (!end)
 							break;
 						DataRow row = dt.NewRow();
-						for (int j = 0; j < columnCount; j++)
+						for (int j = 0; j < reader.FieldCount; j++)
 						{
 							if (j < reader.FieldCount)
 								row[j] = reader.GetValue(j);

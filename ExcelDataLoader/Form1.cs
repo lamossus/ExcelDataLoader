@@ -1,3 +1,5 @@
+using IniParser;
+using IniParser.Model;
 using MySql.Data.MySqlClient;
 using System.Data;
 using System.Text;
@@ -8,13 +10,11 @@ namespace ExcelDataLoader
 	{
 		private string _excelPath = "";
 
-		private Dictionary<int, int> _mapping = new Dictionary<int, int>();
 		private List<string> _columnNames = new List<string>();
-		private int _columnCount = 0;
 
 		private List<ComboBox> _mappingBoxes = new List<ComboBox>();
 
-		private const string CON_STRING = "Server={0};uid={1};pwd={2};Database={3};";
+		private string conString = "";
 
 		private DataTable _cachedPreview = new DataTable();
 		private int _cachedStartIndex = 0;
@@ -32,11 +32,24 @@ namespace ExcelDataLoader
 
 			Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 
-			for (int i = 0; i < _mappingBoxes.Count; i++)
-				_mappingBoxes[i].SelectedIndex = i;
-
 			_sqlLoader = new SqlLoader();
 			_excelLoader = new ExcelLoader();
+
+			UpdateConnectionString();
+
+			FileIniDataParser parser = new FileIniDataParser();
+			IniData data = parser.ReadFile("config.ini");
+
+			int skipRows = int.TryParse(data["upload"]["skipRows"], out skipRows) ? skipRows : 3;
+			bool clearTable = bool.TryParse(data["upload"]["clearTable"], out clearTable) ? clearTable : true;
+
+			data["upload"]["skipRows"] = skipRows.ToString();
+			data["upload"]["clearTable"] = clearTable.ToString();
+
+			parser.WriteFile("config.ini", data);
+
+			skip_rows_numeric.Value = skipRows;
+			clear_table_chechBox.Checked = clearTable;
 		}
 
 		private void load_excel_button_Click(object sender, EventArgs e)
@@ -59,11 +72,16 @@ namespace ExcelDataLoader
 		}
 		private void table_combo_box_SelectedIndexChanged(object sender, EventArgs e)
 		{
+			protocol_text.Text = "";
+			protocol_text.Refresh();
+
+			if (table_combo_box.SelectedIndex == 0)
+				return;
+
 			try
 			{
-				using (var con = new MySqlConnection(GenerateConnectionString()))
+				using (var con = new MySqlConnection(conString))
 					_columnNames = _sqlLoader.GetColumnNames(table_combo_box.Text, con);
-				_columnCount = Math.Max(_columnNames.Count, _columnCount);
 				UpdatePreview(false);
 			}
 			catch (Exception exc)
@@ -79,7 +97,7 @@ namespace ExcelDataLoader
 
 			string tableName = table_combo_box.Text;
 
-			if (tableName == "")
+			if (tableName == "" || tableName == "--выберите таблицу--")
 			{
 				protocol_text.Text = "Укажите таблицу БД.";
 				return;
@@ -87,18 +105,6 @@ namespace ExcelDataLoader
 			if (_excelPath == "")
 			{
 				protocol_text.Text = "Выберите файл Excel для загрузки.";
-				return;
-			}
-
-			string conString = "";
-
-			try
-			{
-				conString = GenerateConnectionString();
-			}
-			catch (Exception exc)
-			{
-				protocol_text.Text = exc.Message;
 				return;
 			}
 
@@ -113,6 +119,12 @@ namespace ExcelDataLoader
 			{
 				try
 				{
+					Dictionary<int, int> mapping = new Dictionary<int, int>();
+
+					foreach (var box in _mappingBoxes)
+						if (box.SelectedIndex != 0)
+							mapping[box.SelectedIndex - 1] = (int)box.Tag;
+
 					protocolStringBuiler.AppendLine($"Количество записей до очистки: {_sqlLoader.GetRowCount(tableName, con)}");
 					protocolStringBuiler.AppendLine($"Имя загружаемого файла: {Path.GetFileName(_excelPath)}");
 					DataTable dt;
@@ -124,7 +136,7 @@ namespace ExcelDataLoader
 					_excelLoader.OnProgress -= progressBarUpdate;
 					progressMade = 50;
 					_sqlLoader.OnProgress += progressBarUpdate;
-					_sqlLoader.BulkInsert(dt, table_combo_box.Text, con, _mapping, clear_table_chechBox.Checked);
+					_sqlLoader.BulkInsert(dt, table_combo_box.Text, con, mapping, clear_table_chechBox.Checked);
 					_sqlLoader.OnProgress -= progressBarUpdate;
 					protocolStringBuiler.AppendLine($"Количество записей после загрузки: {_sqlLoader.GetRowCount(tableName, con)}");
 					protocolStringBuiler.AppendLine($"Количество загруженных листов: {_excelLoader.LastReadSheetCount}");
@@ -160,6 +172,17 @@ namespace ExcelDataLoader
 			if (_excelPath != "")
 				UpdatePreview(false);
 		}
+		private void refresh_button_Click(object sender, EventArgs e)
+		{
+			UpdateConnectionString();
+		}
+		private void reset_mapping_button_Click(object sender, EventArgs e)
+		{
+			var result = MessageBox.Show("Вы уверены, что хотите сбросить соответствие столбцов? Это действие нельзя отменить", "Сброс соответствия столбцов", MessageBoxButtons.YesNo);
+
+			if (result == DialogResult.Yes)
+				GenerateComboBoxes();
+		}
 		private void MappingChanged(object? sender, EventArgs e)
 		{
 			if (sender == null)
@@ -170,20 +193,11 @@ namespace ExcelDataLoader
 			if (changedBox.SelectedIndex == 0)
 				return;
 
-			_mapping[changedBox.SelectedIndex - 1] = Convert.ToInt32(changedBox.Tag);
-
-			List<int> possibleValues = Enumerable.Range(1, _columnNames.Count).ToList();
-			foreach (var box in _mappingBoxes)
-				possibleValues.Remove(box.SelectedIndex);
-
-			if (possibleValues.Count == 0)
-				return;
-
 			foreach (var box in _mappingBoxes)
 			{
 				if (box != changedBox && box.SelectedIndex == changedBox.SelectedIndex)
 				{
-					box.SelectedIndex = possibleValues[0];
+					box.SelectedIndex = 0;
 					break;
 				}
 			}
@@ -191,7 +205,9 @@ namespace ExcelDataLoader
 
 		private void GenerateComboBoxes()
 		{
-			_mapping.Clear();
+			reset_mapping_button.Enabled = true;
+			reset_mapping_button.Visible = true;
+
 			foreach (ComboBox box in _mappingBoxes)
 			{
 				box.Dispose();
@@ -199,7 +215,7 @@ namespace ExcelDataLoader
 			}
 			_mappingBoxes.Clear();
 
-			for (int i = 0; i < _columnCount; i++)
+			for (int i = 0; i < _cachedPreview.Columns.Count; i++)
 			{
 				ComboBox comboBox = new ComboBox();
 
@@ -223,19 +239,46 @@ namespace ExcelDataLoader
 			}
 		}
 
-		private string GenerateConnectionString()
+		private void UpdateConnectionString()
 		{
-			string server = server_textBox.Text;
-			if (server == "")
-				throw new Exception("Введите адрес сервера БД.");
+			string conStringTemplate = "Server={0};uid={1};pwd={2};Database={3};";
 
-			string login = login_textBox.Text;
-			string password = password_textBox.Text;
-			string database = db_name_textBox.Text;
-			if (database == "")
-				throw new Exception("Введите название БД.");
+			FileIniDataParser parser = new FileIniDataParser();
+			IniData data = parser.ReadFile("config.ini");
 
-			return string.Format(CON_STRING, server, login, password, database);
+			string host = data["connect"]["host"];
+			string db = data["connect"]["db"];
+			string user = data["connect"]["user"];
+			string password = data["connect"]["password"];
+
+			conString = string.Format(conStringTemplate, host, user, password, db);
+
+			UpdateTableNames();
+		}
+		private void UpdateTableNames()
+		{
+			protocol_text.Text = "";
+			protocol_text.Refresh();
+
+			try
+			{
+				using (var con = new MySqlConnection(conString))
+				{
+					List<string> tableNames = _sqlLoader.GetTableNames(con);
+
+					table_combo_box.Items.Clear();
+					table_combo_box.Items.Add("--выберите таблицу--");
+					table_combo_box.SelectedIndex = 0;
+					table_combo_box.Items.AddRange(tableNames.ToArray());
+				}
+			}
+			catch
+			{
+				protocol_text.Text = "Не удалось подключиться к БД для получения списка таблиц. " +
+					"Убедитесь, что в config.ini указаны правильные данные для подключения, а затем " +
+					"нажмите кнопку обновления списка таблиц возле поля \"Таблица БД\" или " +
+					"перезапустите приложение.";
+			}			
 		}
 
 		private void UpdatePreview(bool newFile = true)
@@ -243,31 +286,31 @@ namespace ExcelDataLoader
 			if (_excelPath == "")
 				return;
 
-			if (_columnCount == 0)
+			if (_cachedPreview == null)
 			{
 				excel_preview.Rows.Clear();
 				excel_preview.Refresh();
 				return;
 			}
 
-			if (newFile || _columnNames.Count > _columnCount)
-				LoadNewPreview(_columnCount);
+			if (newFile)
+				LoadNewPreview();
 
 			GenerateComboBoxes();
 
 			DataTable preview = GetPreview();
 			excel_preview.DataSource = preview;
-			excel_preview.Width = COLUMN_WIDTH * _columnCount;
+			excel_preview.Width = COLUMN_WIDTH * preview.Columns.Count;
 		}
 		private DataTable GetPreview()
 		{
 			DataTable dt = new DataTable();
-			for (int i = 0; i < _columnCount; i++)
+			for (int i = 0; i < _cachedPreview.Columns.Count; i++)
 				dt.Columns.Add();
 			int skipRows = (int)skip_rows_numeric.Value;
 
 			if (_cachedStartIndex + _cachedPreview.Rows.Count - skipRows < 4 || _cachedStartIndex > skipRows)
-				LoadNewPreview(_columnCount);
+				LoadNewPreview();
 
 			for (int i = 0; i < 4; i++)
 			{
@@ -279,14 +322,14 @@ namespace ExcelDataLoader
 
 			return dt;
 		}
-		private void LoadNewPreview(int columns)
+		private void LoadNewPreview()
 		{
 			int skipRows = (int)skip_rows_numeric.Value;
 
 			int start = Math.Max(0, skipRows - BACKWARD_CACHE_COUNT);
 			int length = skipRows + FORWARD_CACHE_COUNT - start;
 
-			_cachedPreview = _excelLoader.GetExcelPreview(_excelPath, columns, length, start);
+			_cachedPreview = _excelLoader.GetExcelPreview(_excelPath, length, start);
 
 			_cachedStartIndex = start;
 		}

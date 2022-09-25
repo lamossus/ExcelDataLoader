@@ -28,6 +28,7 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
+			this.components = new System.ComponentModel.Container();
 			System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
 			System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
 			this.load_excel_button = new System.Windows.Forms.Button();
@@ -40,16 +41,11 @@
 			this.clear_table_chechBox = new System.Windows.Forms.CheckBox();
 			this.skip_rows_numeric = new System.Windows.Forms.NumericUpDown();
 			this.skip_rows_label = new System.Windows.Forms.Label();
-			this.login_label = new System.Windows.Forms.Label();
-			this.login_textBox = new System.Windows.Forms.TextBox();
-			this.password_label = new System.Windows.Forms.Label();
-			this.password_textBox = new System.Windows.Forms.TextBox();
-			this.db_label = new System.Windows.Forms.Label();
-			this.db_name_textBox = new System.Windows.Forms.TextBox();
-			this.server_label = new System.Windows.Forms.Label();
-			this.server_textBox = new System.Windows.Forms.TextBox();
 			this.progressBar = new ExcelDataLoader.ColoredProgressBar();
 			this.panel1 = new System.Windows.Forms.Panel();
+			this.reset_mapping_button = new System.Windows.Forms.Button();
+			this.refresh_button = new System.Windows.Forms.Button();
+			this.refreshTooltip = new System.Windows.Forms.ToolTip(this.components);
 			((System.ComponentModel.ISupportInitialize)(this.excel_preview)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.skip_rows_numeric)).BeginInit();
 			this.panel1.SuspendLayout();
@@ -82,7 +78,7 @@
 			// 
 			// upload_button
 			// 
-			this.upload_button.Location = new System.Drawing.Point(12, 401);
+			this.upload_button.Location = new System.Drawing.Point(12, 339);
 			this.upload_button.Name = "upload_button";
 			this.upload_button.Size = new System.Drawing.Size(438, 25);
 			this.upload_button.TabIndex = 3;
@@ -123,7 +119,7 @@
 			this.excel_preview.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.AutoSizeToAllHeaders;
 			this.excel_preview.RowTemplate.Height = 25;
 			this.excel_preview.ScrollBars = System.Windows.Forms.ScrollBars.None;
-			this.excel_preview.Size = new System.Drawing.Size(440, 101);
+			this.excel_preview.Size = new System.Drawing.Size(439, 101);
 			this.excel_preview.TabIndex = 5;
 			// 
 			// excel_filename
@@ -154,19 +150,19 @@
 			// 
 			// clear_table_chechBox
 			// 
-			this.clear_table_chechBox.AutoSize = true;
 			this.clear_table_chechBox.Checked = true;
 			this.clear_table_chechBox.CheckState = System.Windows.Forms.CheckState.Checked;
-			this.clear_table_chechBox.Location = new System.Drawing.Point(300, 15);
+			this.clear_table_chechBox.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+			this.clear_table_chechBox.Location = new System.Drawing.Point(300, 44);
 			this.clear_table_chechBox.Name = "clear_table_chechBox";
-			this.clear_table_chechBox.Size = new System.Drawing.Size(123, 19);
+			this.clear_table_chechBox.Size = new System.Drawing.Size(121, 19);
 			this.clear_table_chechBox.TabIndex = 13;
 			this.clear_table_chechBox.Text = "Очистка таблицы";
 			this.clear_table_chechBox.UseVisualStyleBackColor = true;
 			// 
 			// skip_rows_numeric
 			// 
-			this.skip_rows_numeric.Location = new System.Drawing.Point(415, 41);
+			this.skip_rows_numeric.Location = new System.Drawing.Point(415, 13);
 			this.skip_rows_numeric.Maximum = new decimal(new int[] {
             65000,
             0,
@@ -185,82 +181,16 @@
 			// skip_rows_label
 			// 
 			this.skip_rows_label.AutoSize = true;
-			this.skip_rows_label.Location = new System.Drawing.Point(300, 44);
+			this.skip_rows_label.Location = new System.Drawing.Point(300, 16);
 			this.skip_rows_label.Name = "skip_rows_label";
 			this.skip_rows_label.Size = new System.Drawing.Size(109, 15);
 			this.skip_rows_label.TabIndex = 15;
 			this.skip_rows_label.Text = "Пропустить строк:";
 			// 
-			// login_label
-			// 
-			this.login_label.AutoSize = true;
-			this.login_label.Location = new System.Drawing.Point(12, 342);
-			this.login_label.Name = "login_label";
-			this.login_label.Size = new System.Drawing.Size(44, 15);
-			this.login_label.TabIndex = 16;
-			this.login_label.Text = "Логин:";
-			// 
-			// login_textBox
-			// 
-			this.login_textBox.Location = new System.Drawing.Point(75, 339);
-			this.login_textBox.Name = "login_textBox";
-			this.login_textBox.Size = new System.Drawing.Size(153, 23);
-			this.login_textBox.TabIndex = 17;
-			// 
-			// password_label
-			// 
-			this.password_label.AutoSize = true;
-			this.password_label.Location = new System.Drawing.Point(12, 371);
-			this.password_label.Name = "password_label";
-			this.password_label.Size = new System.Drawing.Size(52, 15);
-			this.password_label.TabIndex = 18;
-			this.password_label.Text = "Пароль:";
-			// 
-			// password_textBox
-			// 
-			this.password_textBox.Location = new System.Drawing.Point(75, 368);
-			this.password_textBox.Name = "password_textBox";
-			this.password_textBox.PasswordChar = '*';
-			this.password_textBox.Size = new System.Drawing.Size(153, 23);
-			this.password_textBox.TabIndex = 19;
-			// 
-			// db_label
-			// 
-			this.db_label.AutoSize = true;
-			this.db_label.Location = new System.Drawing.Point(234, 342);
-			this.db_label.Name = "db_label";
-			this.db_label.Size = new System.Drawing.Size(25, 15);
-			this.db_label.TabIndex = 20;
-			this.db_label.Text = "БД:";
-			// 
-			// db_name_textBox
-			// 
-			this.db_name_textBox.Location = new System.Drawing.Point(297, 337);
-			this.db_name_textBox.Name = "db_name_textBox";
-			this.db_name_textBox.Size = new System.Drawing.Size(153, 23);
-			this.db_name_textBox.TabIndex = 21;
-			// 
-			// server_label
-			// 
-			this.server_label.AutoSize = true;
-			this.server_label.Location = new System.Drawing.Point(234, 371);
-			this.server_label.Name = "server_label";
-			this.server_label.Size = new System.Drawing.Size(50, 15);
-			this.server_label.TabIndex = 22;
-			this.server_label.Text = "Сервер:";
-			// 
-			// server_textBox
-			// 
-			this.server_textBox.Location = new System.Drawing.Point(297, 366);
-			this.server_textBox.Name = "server_textBox";
-			this.server_textBox.Size = new System.Drawing.Size(153, 23);
-			this.server_textBox.TabIndex = 23;
-			this.server_textBox.Text = "localhost";
-			// 
 			// progressBar
 			// 
 			this.progressBar.ForeColor = System.Drawing.Color.LimeGreen;
-			this.progressBar.Location = new System.Drawing.Point(12, 432);
+			this.progressBar.Location = new System.Drawing.Point(12, 370);
 			this.progressBar.Name = "progressBar";
 			this.progressBar.Size = new System.Drawing.Size(438, 23);
 			this.progressBar.TabIndex = 24;
@@ -271,24 +201,46 @@
 			this.panel1.Controls.Add(this.excel_preview);
 			this.panel1.Location = new System.Drawing.Point(11, 67);
 			this.panel1.Name = "panel1";
-			this.panel1.Size = new System.Drawing.Size(440, 155);
+			this.panel1.Size = new System.Drawing.Size(439, 155);
 			this.panel1.TabIndex = 25;
+			// 
+			// reset_mapping_button
+			// 
+			this.reset_mapping_button.BackColor = System.Drawing.Color.Red;
+			this.reset_mapping_button.Enabled = false;
+			this.reset_mapping_button.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+			this.reset_mapping_button.Font = new System.Drawing.Font("Wingdings 3", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+			this.reset_mapping_button.Location = new System.Drawing.Point(429, 42);
+			this.reset_mapping_button.Name = "reset_mapping_button";
+			this.reset_mapping_button.Size = new System.Drawing.Size(21, 23);
+			this.reset_mapping_button.TabIndex = 27;
+			this.reset_mapping_button.Text = "P";
+			this.refreshTooltip.SetToolTip(this.reset_mapping_button, "Сбросить соответствия колонок");
+			this.reset_mapping_button.UseVisualStyleBackColor = false;
+			this.reset_mapping_button.Visible = false;
+			this.reset_mapping_button.Click += new System.EventHandler(this.reset_mapping_button_Click);
+			// 
+			// refresh_button
+			// 
+			this.refresh_button.Font = new System.Drawing.Font("Wingdings 3", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+			this.refresh_button.Location = new System.Drawing.Point(88, 41);
+			this.refresh_button.Name = "refresh_button";
+			this.refresh_button.Size = new System.Drawing.Size(21, 23);
+			this.refresh_button.TabIndex = 26;
+			this.refresh_button.Text = "P";
+			this.refreshTooltip.SetToolTip(this.refresh_button, "Обновить список таблиц");
+			this.refresh_button.UseVisualStyleBackColor = true;
+			this.refresh_button.Click += new System.EventHandler(this.refresh_button_Click);
 			// 
 			// Form1
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(462, 462);
+			this.ClientSize = new System.Drawing.Size(462, 404);
+			this.Controls.Add(this.reset_mapping_button);
+			this.Controls.Add(this.refresh_button);
 			this.Controls.Add(this.panel1);
 			this.Controls.Add(this.progressBar);
-			this.Controls.Add(this.server_textBox);
-			this.Controls.Add(this.server_label);
-			this.Controls.Add(this.db_name_textBox);
-			this.Controls.Add(this.db_label);
-			this.Controls.Add(this.password_textBox);
-			this.Controls.Add(this.password_label);
-			this.Controls.Add(this.login_textBox);
-			this.Controls.Add(this.login_label);
 			this.Controls.Add(this.skip_rows_label);
 			this.Controls.Add(this.skip_rows_numeric);
 			this.Controls.Add(this.clear_table_chechBox);
@@ -322,15 +274,10 @@
 		private CheckBox clear_table_chechBox;
 		private NumericUpDown skip_rows_numeric;
 		private Label skip_rows_label;
-		private Label login_label;
-		private TextBox login_textBox;
-		private Label password_label;
-		private TextBox password_textBox;
-		private Label db_label;
-		private TextBox db_name_textBox;
-		private Label server_label;
-		private TextBox server_textBox;
 		private ColoredProgressBar progressBar;
 		private Panel panel1;
+		private Button refresh_button;
+		private ToolTip refreshTooltip;
+		private Button reset_mapping_button;
 	}
 }
