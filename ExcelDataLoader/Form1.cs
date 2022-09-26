@@ -69,6 +69,9 @@ namespace ExcelDataLoader
 			}
 
 			UpdatePreview();
+
+			if (table_combo_box.SelectedIndex != 0)
+				upload_button.Enabled = true;
 		}
 		private void table_combo_box_SelectedIndexChanged(object sender, EventArgs e)
 		{
@@ -83,6 +86,8 @@ namespace ExcelDataLoader
 				using (var con = new MySqlConnection(conString))
 					_columnNames = _sqlLoader.GetColumnNames(table_combo_box.Text, con);
 				UpdatePreview(false);
+				if (_excelPath != "")
+					upload_button.Enabled = true;
 			}
 			catch (Exception exc)
 			{
@@ -241,6 +246,7 @@ namespace ExcelDataLoader
 
 		private void UpdateConnectionString()
 		{
+			upload_button.Enabled = false;
 			string conStringTemplate = "Server={0};uid={1};pwd={2};Database={3};";
 
 			FileIniDataParser parser = new FileIniDataParser();

@@ -10,6 +10,7 @@ namespace ExcelDataLoader
 {
 	internal class SqlLoader
 	{
+		private const int MAX_COMMAND_SIZE = 4<<20;
 		private int _batchSize = 25000;
 		public int BatchSize
 		{
@@ -66,7 +67,7 @@ namespace ExcelDataLoader
 
 						comString.Append(')');
 
-						if (currentBatchSize == _batchSize || i == dataTable.Rows.Count - 1)
+						if (currentBatchSize == _batchSize || comString.Length * 2 + 510 > MAX_COMMAND_SIZE || i == dataTable.Rows.Count - 1)
 						{
 							comString.Append(';');
 

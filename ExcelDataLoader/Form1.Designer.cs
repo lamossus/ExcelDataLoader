@@ -66,10 +66,7 @@
 			this.table_combo_box.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.table_combo_box.FormattingEnabled = true;
 			this.table_combo_box.Items.AddRange(new object[] {
-            "fond_debts",
-            "fond_not_boo",
-            "test1",
-            "test2"});
+            "--выберите таблицу--"});
 			this.table_combo_box.Location = new System.Drawing.Point(115, 41);
 			this.table_combo_box.Name = "table_combo_box";
 			this.table_combo_box.Size = new System.Drawing.Size(179, 23);
@@ -201,7 +198,7 @@
 			this.panel1.Controls.Add(this.excel_preview);
 			this.panel1.Location = new System.Drawing.Point(11, 67);
 			this.panel1.Name = "panel1";
-			this.panel1.Size = new System.Drawing.Size(439, 155);
+			this.panel1.Size = new System.Drawing.Size(440, 155);
 			this.panel1.TabIndex = 25;
 			// 
 			// reset_mapping_button
